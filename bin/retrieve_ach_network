@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+puts "Updating ACH network listing"
+
+#puts "\tRetrieving current listing..."
+#puts "\tParsing file contents..."
+#puts "\tCreating database file" || "Using existing database file..."
+#puts "\tAdding new records" || "Updating existin records"

@@ -1,0 +1,15 @@
+PROBLEM:
+  The Federal Reserve maintains a list of financial institutions
+  participating in the ACH network.  Write code which downloads
+  their list of institutions, parses out the information, and
+  stores it in a database.  The code only needs to support
+  downloading and storing all of the entries.  Bonus points
+  for using Ruby and writing tests.
+
+  Download all entries:  http://www.fededirectory.frb.org/FedACHdir.txt
+  Format Specification:  http://www.fededirectory.frb.org/format_ACH.cfm
+
+Executing the Solution:
+
+  1. cd into the application directory
+  2. execute ./bin/retrieve_ach_network

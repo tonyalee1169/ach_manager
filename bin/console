@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+irb = RUBY_PLATFORM =~ /(:?mswin|mingw)/ ? 'irb.bat' : 'irb'
+
+libs =  " -r irb/completion"
+
+libs << " -r #{File.dirname(__FILE__) + '/../lib/ach_manager.rb'}"
+libs << " -Ilib"
+
+puts "Loading ACH Manager environment"
+exec "#{irb} #{libs} --simple-prompt"

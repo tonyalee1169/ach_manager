@@ -1,8 +1,25 @@
 #!/usr/bin/env ruby
 
+lib_path = File.expand_path("#{File.dirname(__FILE__)}/../lib")
+$:.unshift(lib_path) unless $:.include?(lib_path)
+
+require 'ach_manager'
+include ACHManager
+
+def notify_and_do(message, &block)
+  print "#{message}..."
+  returned_content = yield
+  puts "Done!"
+  returned_content
+end
+
+
+
 puts "Updating ACH network listing"
 
-#puts "\tRetrieving current listing..."
+current_list = notify_and_do("Retrieving current listing") {Retriever.grab_current_list}
+
+puts current_list.size
+
 #puts "\tParsing file contents..."
-#puts "\tCreating database file" || "Using existing database file..."
 #puts "\tAdding new records" || "Updating existin records"

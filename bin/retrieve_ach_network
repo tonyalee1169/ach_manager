@@ -13,13 +13,46 @@ def notify_and_do(message, &block)
   returned_content
 end
 
+field_definitions = Definitions.parse do
+  field 'routing_number', 9, '1-9'
+  field 'office_code', 1, '10'
+  field 'servicing_frb_number', 9, '11-19'
+  field 'record_type_code', 19, '20'
+  field 'change_date', 6, '21-26'
+  field 'new_routing_number', 9, '27-35'
+  field 'customer_name', 36, '36-71'
+  field 'address', 36, '72-107'
+  field 'city', 20, '108-127'
+  field 'state_code', 20, '128-129'
+  field 'zipcode', 5, '130-134'
+  field 'zipcode_extension', 4, '135-138'
+  field 'telephone_area_code', 36, '139-141'
+  field 'telephone_prefix_number', 36, '142-144'
+  field 'telephone_suffix_number', 4, '145-148'
+  field 'institution_status_code', 148, '149'
+  field 'data_view_code', 149, '150'
+  field 'filler', 5, '151-155'
+end
 
 
 puts "Updating ACH network listing"
 
 current_list = notify_and_do("Retrieving current listing") {Retriever.grab_current_list}
 
-puts current_list.size
+notify_and_do("Parsing file contents") do
+  parser = Parser.new(field_definitions)
 
-#puts "\tParsing file contents..."
-#puts "\tAdding new records" || "Updating existin records"
+  institutions = current_list.map do |raw_institution|
+    parsed_institution = parser.parse(raw_institution)
+    institution = Institution.find_by_routing_number(parsed_institution[:routing_number])
+    if institution.nil?
+      Institution.create(parsed_institution)
+      puts "Added #{parsed_institution[:customer_name]}"
+    end
+  end.compact
+
+  puts "Added #{institutions.size} new institutions."
+end
+
+puts ""
+puts "Exiting."

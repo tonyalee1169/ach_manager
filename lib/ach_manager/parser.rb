@@ -6,7 +6,7 @@ module ACHManager
 
     def parse(string)
       @fieldset.fields.inject({}) {|all, current_field|
-        all.merge(current_field.name.to_sym => string[current_field.character_range])
+        all.merge(current_field.name.to_sym => string[current_field.character_range].strip)
       }
     end
   end

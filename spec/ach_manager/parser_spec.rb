@@ -17,5 +17,13 @@ describe Parser do
       parser.parse(full_string).should include({:routing_number => routing_number})
       parser.parse(full_string).should include({:office_code=> office_code})
     end
+
+    context "when the string retrieved has whitespace on the ends" do
+      let(:routing_number) {'  34567  '}
+
+      it "strips leading and trailing whitespace" do
+        parser.parse(full_string).should include({:routing_number => '34567'})
+      end
+    end
   end
 end

@@ -13,7 +13,7 @@ def notify_and_do(message, &block)
   returned_content
 end
 
-field_definitions = Definitions.parse do
+field_definitions = Definitions.declare do
   field 'routing_number', 9, '1-9'
   field 'office_code', 1, '10'
   field 'servicing_frb_number', 9, '11-19'

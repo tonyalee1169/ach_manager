@@ -7,10 +7,8 @@ require 'ach_manager'
 include ACHManager
 
 def notify_and_do(message, &block)
-  print "#{message}..."
-  returned_content = yield
-  puts "Done!"
-  returned_content
+  puts "#{message}"
+  yield
 end
 
 field_definitions = Definitions.declare do
@@ -35,24 +33,33 @@ field_definitions = Definitions.declare do
 end
 
 
-puts "Updating ACH network listing"
+previous_count = Institution.count
 
-current_list = notify_and_do("Retrieving current listing") {Retriever.grab_current_list}
+notify_and_do "Updating ACH network listing" do
+  current_list = notify_and_do("Retrieving current listing") {Retriever.grab_current_list}
 
-notify_and_do("Parsing file contents") do
-  parser = Parser.new(field_definitions)
+  notify_and_do("Parsing file contents") do
+    parser = Parser.new(field_definitions)
 
-  institutions = current_list.map do |raw_institution|
-    parsed_institution = parser.parse(raw_institution)
-    institution = Institution.find_by_routing_number(parsed_institution[:routing_number])
-    if institution.nil?
-      Institution.create(parsed_institution)
-      puts "Added #{parsed_institution[:customer_name]}"
+    current_list.map do |raw_institution|
+      parsed_institution = parser.parse(raw_institution)
+
+      institution = Institution.find_by_routing_number(parsed_institution[:routing_number])
+      if institution.nil?
+        Institution.create(parsed_institution)
+        puts "Added: #{parsed_institution[:customer_name]}"
+      else
+        institution.update_attributes(parsed_institution)
+        puts "Updated: #{parsed_institution[:customer_name]}"
+      end
     end
-  end.compact
-
-  puts "Added #{institutions.size} new institutions."
+  end
 end
+
+puts "Done!"
+puts ""
+current_count = Institution.count
+puts "Added #{current_count - previous_count} new institutions."
 
 puts ""
 puts "Exiting."

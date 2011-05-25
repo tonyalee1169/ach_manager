@@ -5,6 +5,7 @@ require 'ach_manager/errors'
 require 'ach_manager/field'
 require 'ach_manager/field_set'
 require 'ach_manager/institution'
+require 'ach_manager/parser'
 require 'ach_manager/retriever'
 require 'ach_manager/storage'
 
